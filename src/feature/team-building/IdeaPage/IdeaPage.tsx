@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/router';
 import styled from 'styled-components';
 
@@ -93,6 +93,15 @@ type IdeaDraftPayload = {
 
 const DRAFT_STORAGE_KEY = 'ideaDraft';
 
+const formatDraftTimestamp = (value: string) => {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return '';
+  const pad = (num: number) => String(num).padStart(2, '0');
+  return `${date.getFullYear()}.${pad(date.getMonth() + 1)}.${pad(date.getDate())} ${pad(
+    date.getHours()
+  )}:${pad(date.getMinutes())}`;
+};
+
 const createInitialForm = (): IdeaFormState => ({
   topic: '전체',
   title: '',
@@ -120,6 +129,52 @@ export default function IdeaPage() {
   const [isDraftModalOpen, setIsDraftModalOpen] = useState(false);
   const [draftForm, setDraftForm] = useState<IdeaFormState | null>(null);
   const [draftSavedAt, setDraftSavedAt] = useState<string | null>(null);
+  const [isAutoSaving, setIsAutoSaving] = useState(false);
+
+  const autoSaveTimerRef = useRef<number | null>(null);
+  const skipAutoSaveRef = useRef(false);
+  const hasInitializedAutoSaveRef = useRef(false);
+  const latestFormRef = useRef(form);
+
+  const persistDraft = useCallback(
+    (targetForm: IdeaFormState, options: { showAlert?: boolean } = {}) => {
+      if (typeof window === 'undefined') {
+        if (options.showAlert) {
+          alert('브라우저 환경에서만 임시 저장을 사용할 수 있어요.');
+        }
+        return;
+      }
+
+      try {
+        const payload: IdeaDraftPayload = {
+          form: {
+            ...targetForm,
+            team: { ...targetForm.team },
+          },
+          savedAt: new Date().toISOString(),
+        };
+        window.localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify(payload));
+        setDraftForm(payload.form);
+        setDraftSavedAt(payload.savedAt);
+        if (options.showAlert) {
+          alert('아이디어가 임시 저장되었습니다!');
+        }
+      } catch (error) {
+        console.error('Failed to save idea draft', error);
+        if (options.showAlert) {
+          alert('임시 저장 중 오류가 발생했어요. 브라우저 저장 공간을 확인해 주세요.');
+        }
+      }
+    },
+    []
+  );
+
+  const clearAutoSaveTimer = useCallback(() => {
+    if (autoSaveTimerRef.current) {
+      window.clearTimeout(autoSaveTimerRef.current);
+      autoSaveTimerRef.current = null;
+    }
+  }, []);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -177,14 +232,43 @@ export default function IdeaPage() {
     };
   }, []);
 
+  useEffect(() => {
+    if (skipAutoSaveRef.current) {
+      skipAutoSaveRef.current = false;
+      return;
+    }
+
+    if (!hasInitializedAutoSaveRef.current) {
+      hasInitializedAutoSaveRef.current = true;
+      return;
+    }
+
+    clearAutoSaveTimer();
+
+    setIsAutoSaving(true);
+    autoSaveTimerRef.current = window.setTimeout(() => {
+      persistDraft(form, { showAlert: false });
+      setIsAutoSaving(false);
+      autoSaveTimerRef.current = null;
+    }, 1000);
+
+    return () => {
+      clearAutoSaveTimer();
+    };
+  }, [clearAutoSaveTimer, form, persistDraft]);
+
   const formattedSavedAt = useMemo(() => {
     if (!draftSavedAt) return '';
-    try {
-      return new Date(draftSavedAt).toLocaleString('ko-KR');
-    } catch {
-      return '';
-    }
+    return formatDraftTimestamp(draftSavedAt);
   }, [draftSavedAt]);
+
+  const updateFormState = useCallback((updater: (prev: IdeaFormState) => IdeaFormState) => {
+    setForm(prev => {
+      const next = updater(prev);
+      latestFormRef.current = next;
+      return next;
+    });
+  }, []);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -193,7 +277,7 @@ export default function IdeaPage() {
     if (name.startsWith('team.')) {
       const key = name.split('.')[1] as keyof IdeaFormState['team'];
       const numericValue = Number(value);
-      setForm(prev => ({
+      updateFormState(prev => ({
         ...prev,
         team: {
           ...prev.team,
@@ -202,39 +286,24 @@ export default function IdeaPage() {
       }));
       return;
     }
-    setForm(prev => ({ ...prev, [name]: value }));
+    updateFormState(prev => ({ ...prev, [name]: value }));
   };
 
   const handleDescriptionChange = (value: string) => {
-    setForm(prev => ({ ...prev, description: value }));
+    updateFormState(prev => ({ ...prev, description: value }));
   };
 
   const handleSave = () => {
-    if (typeof window === 'undefined') {
-      alert('브라우저 환경에서만 임시 저장을 사용할 수 있어요.');
-      return;
-    }
-    try {
-      const payload: IdeaDraftPayload = {
-        form: {
-          ...form,
-          team: { ...form.team },
-        },
-        savedAt: new Date().toISOString(),
-      };
-      window.localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify(payload));
-      setDraftForm(payload.form);
-      setDraftSavedAt(payload.savedAt);
-      alert('아이디어가 임시 저장되었습니다!');
-    } catch (error) {
-      console.error('Failed to save idea draft', error);
-      alert('임시 저장 중 오류가 발생했어요. 브라우저 저장 공간을 확인해 주세요.');
-    }
+    clearAutoSaveTimer();
+    setIsAutoSaving(false);
+    persistDraft(form, { showAlert: true });
   };
   const handlePreview = () => setStep('preview');
   const handleBack = () => setStep('form');
 
   const handleRegister = () => {
+    clearAutoSaveTimer();
+    setIsAutoSaving(false);
     const teamTotal = Object.values(form.team).reduce((sum, count) => sum + count, 0);
     const computedTotal = teamTotal > 0 ? teamTotal : 1;
     const ideaData = {
@@ -250,7 +319,10 @@ export default function IdeaPage() {
     }
     setDraftForm(null);
     setDraftSavedAt(null);
-    setForm(createInitialForm());
+    skipAutoSaveRef.current = true;
+    const initial = createInitialForm();
+    latestFormRef.current = initial;
+    setForm(initial);
     setStep('complete');
   };
 
@@ -264,21 +336,63 @@ export default function IdeaPage() {
       setIsDraftModalOpen(false);
       return;
     }
-    setForm({
+    clearAutoSaveTimer();
+    setIsAutoSaving(false);
+    skipAutoSaveRef.current = true;
+    const nextForm = {
       ...draftForm,
       team: { ...draftForm.team },
-    });
+    };
+    latestFormRef.current = nextForm;
+    setForm(nextForm);
     setStep('form');
     setCompletedIdea(null);
     setIsDraftModalOpen(false);
   };
 
   const handleSkipDraft = () => {
-    setForm(createInitialForm());
+    clearAutoSaveTimer();
+    setIsAutoSaving(false);
+    skipAutoSaveRef.current = true;
+    const initial = createInitialForm();
+    latestFormRef.current = initial;
+    setForm(initial);
     setStep('form');
     setCompletedIdea(null);
     setIsDraftModalOpen(false);
   };
+
+  useEffect(() => {
+    latestFormRef.current = form;
+  }, [form]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const flushDraft = () => {
+      const currentForm = latestFormRef.current;
+      if (!currentForm) return;
+      clearAutoSaveTimer();
+      setIsAutoSaving(false);
+      persistDraft(currentForm, { showAlert: false });
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'hidden') {
+        flushDraft();
+      }
+    };
+
+    window.addEventListener('pagehide', flushDraft);
+    window.addEventListener('visibilitychange', handleVisibilityChange);
+    router.events?.on('routeChangeStart', flushDraft);
+
+    return () => {
+      window.removeEventListener('pagehide', flushDraft);
+      window.removeEventListener('visibilitychange', handleVisibilityChange);
+      router.events?.off('routeChangeStart', flushDraft);
+    };
+  }, [clearAutoSaveTimer, persistDraft, router.events]);
 
   return (
     <>
@@ -313,6 +427,8 @@ export default function IdeaPage() {
             onSave={handleSave}
             onPreview={handlePreview}
             onDescriptionChange={handleDescriptionChange}
+            lastSavedAt={formattedSavedAt}
+            isSaving={isAutoSaving}
           />
         )}
         {step === 'preview' && (

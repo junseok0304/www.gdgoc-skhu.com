@@ -1,7 +1,7 @@
 import React from 'react';
 import dynamic from 'next/dynamic';
-import type ReactQuillType from 'react-quill';
 import type { ReactQuillProps } from 'react-quill';
+import type ReactQuillType from 'react-quill';
 import styled, { css } from 'styled-components';
 
 import { sanitizeDescription } from '../utils/sanitizeDescription';
@@ -155,6 +155,32 @@ const FieldLabel = styled.label`
   margin-bottom: 0.55rem;
 `;
 
+const FieldHeader = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.55rem;
+`;
+
+const DescriptionLabel = styled(FieldLabel)`
+  margin-bottom: 0;
+`;
+
+const AutoSaveStatus = styled.span<{ $saving: boolean }>`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.82rem;
+  color: ${({ $saving }) => ($saving ? '#4f5dff' : '#6a6a6a')};
+  white-space: nowrap;
+  &::before {
+    content: '💾';
+    font-size: 0.85rem;
+    line-height: 1;
+  }
+`;
+
 const inputStyle = css`
   width: 100%;
   border: 1px solid #bcbcbc;
@@ -269,6 +295,8 @@ interface Props {
   onSave: () => void;
   onPreview: () => void;
   onDescriptionChange: (value: string) => void;
+  lastSavedAt?: string;
+  isSaving?: boolean;
 }
 
 const quillModules = {
@@ -301,6 +329,8 @@ export default function IdeaForm({
   onSave,
   onPreview,
   onDescriptionChange,
+  lastSavedAt,
+  isSaving,
 }: Props) {
   const { topic, title, intro, description, preferredPart } = form;
   const team = form.team ?? {
@@ -315,8 +345,12 @@ export default function IdeaForm({
 
   const quillRef = React.useRef<ReactQuillType | null>(null);
   const [quillRoot, setQuillRoot] = React.useState<HTMLElement | null>(null);
+  const autoSaveMessage = React.useMemo(() => {
+    if (isSaving) return '임시 저장 중...';
+    if (lastSavedAt) return `임시 저장 완료 ${lastSavedAt}`;
+    return '';
+  }, [isSaving, lastSavedAt]);
 
-  // ✅ useEffect에서 안전하게 getEditor 접근
   React.useEffect(() => {
     if (!quillRef.current) return;
     const editor = quillRef.current.getEditor?.();
@@ -371,8 +405,6 @@ export default function IdeaForm({
       <SectionTitle>아이디어 작성</SectionTitle>
       <SectionDivider />
 
-      {/* 👇 이하 기존 구조 그대로 */}
-      {/* 팀 구성 */}
       <TeamSection>
         <TeamHeading>
           팀원 구성을 선택해주세요 <TeamLimit>* 팀원 최대 5명</TeamLimit>{' '}
@@ -399,7 +431,6 @@ export default function IdeaForm({
         <TeamNotice>* 작성자의 희망 파트는 아래에서 선택할 수 있습니다.</TeamNotice>
       </TeamSection>
 
-      {/* 희망 파트 */}
       <PreferredSection>
         <PreferredHeading>
           작성자의 희망 파트를 선택해주세요
@@ -421,7 +452,6 @@ export default function IdeaForm({
         </RadioGroup>
       </PreferredSection>
 
-      {/* 입력 필드 */}
       <FieldSet>
         <FieldLabel htmlFor="topic">주제 선택</FieldLabel>
         <Select id="topic" name="topic" value={topic} onChange={onChange}>
@@ -451,9 +481,13 @@ export default function IdeaForm({
         />
       </FieldSet>
 
-      {/* Quill 에디터 */}
       <FieldSet>
-        <FieldLabel htmlFor="description">아이디어 설명</FieldLabel>
+        <FieldHeader>
+          <DescriptionLabel htmlFor="description">아이디어 설명</DescriptionLabel>
+          {autoSaveMessage && (
+            <AutoSaveStatus $saving={Boolean(isSaving)}>{autoSaveMessage}</AutoSaveStatus>
+          )}
+        </FieldHeader>
         <TextAreaWrapper>
           <PreviewTag>미리보기</PreviewTag>
           <QuillWrapper>
@@ -469,11 +503,7 @@ export default function IdeaForm({
         </TextAreaWrapper>
       </FieldSet>
 
-      {/* 버튼 */}
       <ButtonGroup>
-        <Button type="button" onClick={onSave} $variant="secondary">
-          임시 저장
-        </Button>
         <Button type="button" onClick={onPreview} $variant="primary">
           아이디어 미리보기
         </Button>
