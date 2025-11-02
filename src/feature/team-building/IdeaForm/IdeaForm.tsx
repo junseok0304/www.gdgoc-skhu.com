@@ -1,11 +1,16 @@
 import React from 'react';
 import dynamic from 'next/dynamic';
 import type ReactQuillType from 'react-quill';
+import type { ReactQuillProps } from 'react-quill';
 import styled, { css } from 'styled-components';
 
 import { sanitizeDescription } from '../utils/sanitizeDescription';
 
-const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
+const ReactQuill = dynamic(() => import('react-quill'), {
+  ssr: false,
+}) as unknown as React.ForwardRefExoticComponent<
+  ReactQuillProps & React.RefAttributes<ReactQuillType>
+>;
 
 const FormContainer = styled.div`
   margin-top: 2.25rem;
@@ -308,7 +313,7 @@ export default function IdeaForm({
 
   const safeDescription = sanitizeDescription(description ?? '');
 
-  const quillRef = React.useRef<any>(null);
+  const quillRef = React.useRef<ReactQuillType | null>(null);
   const [quillRoot, setQuillRoot] = React.useState<HTMLElement | null>(null);
 
   // ✅ useEffect에서 안전하게 getEditor 접근
@@ -316,7 +321,7 @@ export default function IdeaForm({
     if (!quillRef.current) return;
     const editor = quillRef.current.getEditor?.();
     if (editor) setQuillRoot(editor.root);
-  }, [quillRef.current]);
+  }, []);
 
   React.useEffect(() => {
     if (!quillRoot) return;

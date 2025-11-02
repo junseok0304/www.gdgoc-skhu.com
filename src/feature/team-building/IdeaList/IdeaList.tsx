@@ -97,22 +97,6 @@ const PrimaryButton = styled(SecondaryButton)`
   color: #fff;
 `;
 
-const EmptyState = styled.div`
-  padding: 4rem 2rem;
-  text-align: center;
-  color: #555;
-  line-height: 1.6;
-`;
-
-const BackLink = styled.button`
-  margin-top: 1.5rem;
-  border: none;
-  background: none;
-  color: #7f8cff;
-  font-weight: 600;
-  cursor: pointer;
-  text-decoration: underline;
-`;
 import IdeaLayout from '../IdeaLayout/IdeaLayout';
 import { Idea, useIdeaStore } from '../store/IdeaStore';
 

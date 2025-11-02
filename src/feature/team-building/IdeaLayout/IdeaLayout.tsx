@@ -31,7 +31,7 @@ const Subtitle = styled.h2.withConfig({ componentId: 'TeamBuildingLayout__Subtit
   margin-bottom: 2rem;
 `;
 
-export default function IdeaLayout({ children }: { children: React.ReactNode }) {
+export default function IdeaLayout({ children }: { children?: React.ReactNode }) {
   return (
     <Container>
       <Wrapper>
