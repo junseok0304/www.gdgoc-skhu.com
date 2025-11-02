@@ -1,16 +1,18 @@
 import { useEffect } from 'react';
-import 'react-quill/dist/quill.snow.css';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
-import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import { css } from '@emotion/react';
 import { AnimatePresence } from 'framer-motion';
 
 import Footer from '../components/Footer';
 import Nav from '../components/Nav';
-import Scene from '../components/Scene';
 import { BASE_URL } from '../constants/common';
 import GlobalStyle from '../styles/GlobalStyle';
+
+import 'react-quill/dist/quill.snow.css';
+
+const Scene = dynamic(() => import('../components/Scene'), { ssr: false });
 
 export default function App({ Component, pageProps, router }: AppProps) {
   const CURRENT_URL = BASE_URL + router.route;
