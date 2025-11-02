@@ -504,6 +504,9 @@ export default function IdeaForm({
       </FieldSet>
 
       <ButtonGroup>
+        <Button type="button" onClick={onSave} $variant="secondary">
+          임시 저장
+        </Button>
         <Button type="button" onClick={onPreview} $variant="primary">
           아이디어 미리보기
         </Button>
