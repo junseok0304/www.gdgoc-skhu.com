@@ -1,3 +1,4 @@
+'use client';
 import { Suspense, useRef } from 'react';
 import { css } from '@emotion/react';
 import { ContactShadows, OrbitControls } from '@react-three/drei';

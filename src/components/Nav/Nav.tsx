@@ -46,6 +46,9 @@ export default function Nav() {
         <Link href="/contact" scroll={false}>
           Contact
         </Link>
+        <Link href="/feature/team-building/welcome" scroll={false}>
+          Team building
+        </Link>
       </div>
     </nav>
   );

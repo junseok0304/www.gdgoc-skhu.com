@@ -1,8 +1,9 @@
+import { useEffect } from 'react';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import { css } from '@emotion/react';
 import { AnimatePresence } from 'framer-motion';
-
+import Link from 'next/link';
 import Footer from '../components/Footer';
 import Nav from '../components/Nav';
 import Scene from '../components/Scene';
@@ -11,6 +12,20 @@ import GlobalStyle from '../styles/GlobalStyle';
 
 export default function App({ Component, pageProps, router }: AppProps) {
   const CURRENT_URL = BASE_URL + router.route;
+  const shouldHideScene =
+    router.pathname.startsWith('/feature/team-building') ||
+    router.pathname === '/feature/team-building/welcome';
+
+  useEffect(() => {
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+      event.returnValue = '';
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, []);
+
   return (
     <>
       <Head>
@@ -19,7 +34,8 @@ export default function App({ Component, pageProps, router }: AppProps) {
       </Head>
       <GlobalStyle />
       <Nav />
-      <Scene />
+      {!shouldHideScene && <Scene />}
+
       <AnimatePresence
         mode="wait"
         onExitComplete={() => {
@@ -39,4 +55,6 @@ export default function App({ Component, pageProps, router }: AppProps) {
       <Footer />
     </>
   );
+
+
 }
