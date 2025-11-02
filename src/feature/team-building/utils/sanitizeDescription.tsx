@@ -4,7 +4,10 @@ const BACKGROUND_STYLE_PATTERN = /style="[^"]*background(?:-image)?\s*:[^";]*[^"
 const BACKGROUND_DECLARATION_PATTERN = /background(?:-image)?\s*:[^;"]*;?/gi;
 const stripBackgroundStyles = (input: string): string =>
   input.replace(BACKGROUND_STYLE_PATTERN, match => {
-    const sanitized = match.replace(BACKGROUND_DECLARATION_PATTERN, '').replace(/\s{2,}/g, ' ').trim();
+    const sanitized = match
+      .replace(BACKGROUND_DECLARATION_PATTERN, '')
+      .replace(/\s{2,}/g, ' ')
+      .trim();
     return sanitized === 'style=""' ? '' : sanitized;
   });
 const stripFigureAndImageTags = (input: string): string =>

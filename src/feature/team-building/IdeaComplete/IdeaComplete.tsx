@@ -1,7 +1,9 @@
 import React from 'react';
 import { useRouter } from 'next/router';
 import styled from 'styled-components';
+
 import { Idea } from '../store/IdeaStore';
+
 const Container = styled.div`
   padding: 2.5rem 2rem 3rem;
   font-family: 'Pretendard', sans-serif;
@@ -103,7 +105,6 @@ const PrimaryButton = styled(OutlineButton)`
     background-color: #7c7fee;
   }
 `;
-
 
 interface IdeaCompleteProps {
   idea: Idea;

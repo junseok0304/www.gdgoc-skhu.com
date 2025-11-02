@@ -1,13 +1,13 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import styled from 'styled-components';
-import { Idea, useIdeaStore } from '../store/IdeaStore';
+
 import IdeaComplete from '../IdeaComplete/IdeaComplete';
 import IdeaForm from '../IdeaForm/IdeaForm';
 import IdeaLayout from '../IdeaLayout/IdeaLayout';
 import IdeaPreview from '../IdeaPreview/IdeaPreview';
-import dynamic from 'next/dynamic';
-
+import { Idea, useIdeaStore } from '../store/IdeaStore';
 
 const DraftModalBackdrop = styled.div`
   position: fixed;
@@ -110,7 +110,6 @@ const createInitialForm = (): IdeaFormState => ({
   currentMembers: 0,
   totalMembers: 0,
 });
-
 
 export default function IdeaPage() {
   const router = useRouter();

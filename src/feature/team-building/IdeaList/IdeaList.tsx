@@ -113,8 +113,8 @@ const BackLink = styled.button`
   cursor: pointer;
   text-decoration: underline;
 `;
-import { Idea, useIdeaStore } from '../store/IdeaStore';
 import IdeaLayout from '../IdeaLayout/IdeaLayout';
+import { Idea, useIdeaStore } from '../store/IdeaStore';
 
 const partLabels: Record<keyof Idea['team'], string> = {
   planning: '기획',

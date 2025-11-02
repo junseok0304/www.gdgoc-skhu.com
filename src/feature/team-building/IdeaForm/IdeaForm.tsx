@@ -1,9 +1,9 @@
 import React from 'react';
 import dynamic from 'next/dynamic';
-import styled, { css } from 'styled-components';
 import type ReactQuillType from 'react-quill';
-import { sanitizeDescription } from '../utils/sanitizeDescription';
+import styled, { css } from 'styled-components';
 
+import { sanitizeDescription } from '../utils/sanitizeDescription';
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 
@@ -298,8 +298,13 @@ export default function IdeaForm({
   onDescriptionChange,
 }: Props) {
   const { topic, title, intro, description, preferredPart } = form;
-  const team =
-    form.team ?? { planning: 0, design: 0, frontendWeb: 0, frontendMobile: 0, backend: 0 };
+  const team = form.team ?? {
+    planning: 0,
+    design: 0,
+    frontendWeb: 0,
+    frontendMobile: 0,
+    backend: 0,
+  };
 
   const safeDescription = sanitizeDescription(description ?? '');
 
@@ -366,7 +371,9 @@ export default function IdeaForm({
       <TeamSection>
         <TeamHeading>
           팀원 구성을 선택해주세요 <TeamLimit>* 팀원 최대 5명</TeamLimit>{' '}
-          <TeamCaution>* 이 숫자는 운영자가 사전에 받은 설문 답변과 팀원 모집 인원을 연동해요.</TeamCaution>
+          <TeamCaution>
+            * 이 숫자는 운영자가 사전에 받은 설문 답변과 팀원 모집 인원을 연동해요.
+          </TeamCaution>
         </TeamHeading>
 
         {['planning', 'design', 'frontendWeb', 'frontendMobile', 'backend'].map((key, idx) => {
@@ -419,12 +426,24 @@ export default function IdeaForm({
 
       <FieldSet>
         <FieldLabel htmlFor="title">아이디어 제목</FieldLabel>
-        <Input id="title" name="title" value={title} onChange={onChange} placeholder="제목을 입력해주세요" />
+        <Input
+          id="title"
+          name="title"
+          value={title}
+          onChange={onChange}
+          placeholder="제목을 입력해주세요"
+        />
       </FieldSet>
 
       <FieldSet>
         <FieldLabel htmlFor="intro">아이디어 한 줄 소개</FieldLabel>
-        <Input id="intro" name="intro" value={intro} onChange={onChange} placeholder="아이디어를 간단하게 소개해 주세요" />
+        <Input
+          id="intro"
+          name="intro"
+          value={intro}
+          onChange={onChange}
+          placeholder="아이디어를 간단하게 소개해 주세요"
+        />
       </FieldSet>
 
       {/* Quill 에디터 */}

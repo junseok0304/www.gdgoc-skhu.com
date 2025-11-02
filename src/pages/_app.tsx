@@ -1,9 +1,11 @@
 import { useEffect } from 'react';
+import 'react-quill/dist/quill.snow.css';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
+import Link from 'next/link';
 import { css } from '@emotion/react';
 import { AnimatePresence } from 'framer-motion';
-import Link from 'next/link';
+
 import Footer from '../components/Footer';
 import Nav from '../components/Nav';
 import Scene from '../components/Scene';
@@ -55,6 +57,4 @@ export default function App({ Component, pageProps, router }: AppProps) {
       <Footer />
     </>
   );
-
-
 }

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+
 import IdeaForm from '../../../feature/team-building/IdeaForm/IdeaForm';
 
 export default function Page() {

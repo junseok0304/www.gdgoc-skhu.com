@@ -114,8 +114,8 @@ const EmptyState = styled.div`
   color: #555;
   line-height: 1.6;
 `;
-import { createEmptyTeamCounts, useIdeaStore } from '../store/IdeaStore';
 import IdeaLayout from '../IdeaLayout/IdeaLayout';
+import { createEmptyTeamCounts, useIdeaStore } from '../store/IdeaStore';
 
 export default function IdeaCheckPage() {
   const router = useRouter();
@@ -126,7 +126,7 @@ export default function IdeaCheckPage() {
     return id ? Number(id) : NaN;
   }, [id]);
 
-  const idea = useIdeaStore((state: { getIdeaById: (arg0: number) => any; }) =>
+  const idea = useIdeaStore((state: { getIdeaById: (arg0: number) => any }) =>
     Number.isFinite(numericId) ? state.getIdeaById(numericId as number) : undefined
   );
 

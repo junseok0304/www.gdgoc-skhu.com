@@ -84,8 +84,8 @@ const CompleteMessage = styled.div`
     font-weight: 600;
   }
 `;
-import { useIdeaStore } from '../store/IdeaStore';
 import IdeaLayout from '../IdeaLayout/IdeaLayout';
+import { useIdeaStore } from '../store/IdeaStore';
 
 export default function IdeaApplyCompletePage() {
   const router = useRouter();

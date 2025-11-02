@@ -170,7 +170,9 @@ const IdeaCard = styled(Link)`
   background: #fff;
   text-decoration: none;
   color: inherit;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
   &:hover {
     transform: translateY(-3px);
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
@@ -245,7 +247,8 @@ export default function Welcome() {
       const totalMembers =
         idea.totalMembers ?? Object.values(idea.team).reduce((sum, count) => sum + count, 0);
       const status =
-        idea.status ?? (idea.currentMembers >= totalMembers && totalMembers > 0 ? '모집 마감' : '모집 중');
+        idea.status ??
+        (idea.currentMembers >= totalMembers && totalMembers > 0 ? '모집 마감' : '모집 중');
       return status !== '모집 마감';
     });
   }, [ideas, excludeClosed]);
@@ -261,9 +264,7 @@ export default function Welcome() {
           <StatusText>
             <strong>아이디어 현황</strong> ・ {ideas.length}개
           </StatusText>
-          <RegisterButton href="/feature/team-building/IdeaPage">
-            아이디어 등록
-          </RegisterButton>
+          <RegisterButton href="/feature/team-building/IdeaPage">아이디어 등록</RegisterButton>
         </StatusBar>
 
         <FilterRow>
@@ -311,7 +312,9 @@ export default function Welcome() {
                       {status}
                     </StatusTag>
                   </IdeaCardHeader>
-                  <IdeaCardIntro>{idea.intro || '아직 한 줄 소개가 작성되지 않았어요.'}</IdeaCardIntro>
+                  <IdeaCardIntro>
+                    {idea.intro || '아직 한 줄 소개가 작성되지 않았어요.'}
+                  </IdeaCardIntro>
                   <IdeaCardMeta>
                     <MetaItem>
                       <strong>인원</strong> {idea.currentMembers} / {totalMembers}

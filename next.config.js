@@ -9,18 +9,17 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 });
 const CompressionPlugin = require('compression-webpack-plugin');
 
+/** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
-  compiler: {
-    emotion: true, // ✅ Emotion SSR
+  experimental: {
+    esmExternals: 'loose', // ✅ ESM 패키지 허용
   },
-  webpack: (config, { dev }) => {
-    // ⛔️ 개발 환경에서는 압축 비활성화
-    if (!dev) {
-      config.plugins.push(new CompressionPlugin());
-    }
+  webpack: (config) => {
+    config.resolve.fallback = { fs: false };
     return config;
   },
 };
+
+module.exports = nextConfig;
 
 module.exports = withPlugins([[withTM], [withBundleAnalyzer]], nextConfig);

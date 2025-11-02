@@ -139,8 +139,8 @@ const BackLink = styled.a`
   cursor: pointer;
   text-decoration: underline;
 `;
-import { Idea, useIdeaStore } from '../store/IdeaStore';
 import IdeaLayout from '../IdeaLayout/IdeaLayout';
+import { Idea, useIdeaStore } from '../store/IdeaStore';
 
 const PART_OPTIONS: Array<{ key: keyof Idea['team']; label: string }> = [
   { key: 'planning', label: '기획' },
