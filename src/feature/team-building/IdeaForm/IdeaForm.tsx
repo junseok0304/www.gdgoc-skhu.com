@@ -2,7 +2,6 @@ import React from 'react';
 import dynamic from 'next/dynamic';
 import styled, { css } from 'styled-components';
 import type ReactQuillType from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
 import { sanitizeDescription } from '../utils/sanitizeDescription';
 
 
