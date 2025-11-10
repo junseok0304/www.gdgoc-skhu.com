@@ -1,4 +1,5 @@
 import { css } from '@emotion/react';
+
 import { colors } from '../../../styles/constants/colors';
 
 export const buttonWrap = css`
@@ -17,30 +18,30 @@ export const buttonWrap = css`
   &:hover:not(:disabled) {
     background-color: #3770cd;
   }
-  
+
   &:active:not(:disabled) {
     background-color: #2d5aa6;
   }
-  
+
   &:disabled {
     background-color: #ededef;
     color: #c3c6cb;
     cursor: not-allowed;
   }
-  
+
   &[data-variant='secondary'] {
     background-color: white;
     color: ${colors.gdscBlue};
     border: 1px solid ${colors.gdscBlue};
-    
+
     &:hover:not(:disabled) {
       background-color: #d9e7fd;
     }
-    
+
     &:active:not(:disabled) {
       background-color: #9dc0f9;
     }
-    
+
     &:disabled {
       background-color: #ededef;
       color: #c3c6cb;

@@ -1,6 +1,6 @@
 'use client';
 
-import { InputHTMLAttributes, forwardRef } from 'react';
+import { forwardRef, InputHTMLAttributes } from 'react';
 
 import { boxOff, boxOn } from '../styles/radioBox';
 
@@ -47,7 +47,7 @@ const RadioBox = forwardRef<HTMLInputElement, RadioBoxProps>(
           type="radio"
           checked={isSelected}
           disabled={disabled}
-          onChange={(e) => onChange?.(e.target.checked)}
+          onChange={e => onChange?.(e.target.checked)}
           style={{ position: 'absolute', opacity: 0, pointerEvents: 'none' }}
           {...rest}
         />

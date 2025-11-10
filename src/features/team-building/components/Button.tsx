@@ -1,4 +1,5 @@
 import { ButtonHTMLAttributes, forwardRef } from 'react';
+
 import { buttonWrap } from '../styles/button';
 
 interface ButtonBasicProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -25,15 +26,7 @@ interface ButtonBasicProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const Button = forwardRef<HTMLButtonElement, ButtonBasicProps>(
   (
-    {
-      title,
-      children,
-      disabled = false,
-      className,
-      variant = 'primary',
-      type = 'button',
-      ...rest
-    },
+    { title, children, disabled = false, className, variant = 'primary', type = 'button', ...rest },
     ref
   ) => {
     return (

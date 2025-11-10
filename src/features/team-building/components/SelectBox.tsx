@@ -119,7 +119,7 @@ export default function SelectBox({
     if (disabled) return;
 
     const newSelected = selected.filter(item => item !== option);
-    
+
     if (!isControlled) {
       setInternalSelected(newSelected);
     }
@@ -128,7 +128,7 @@ export default function SelectBox({
 
   const handleHeaderClick = (e: React.MouseEvent) => {
     if (disabled) return;
-    
+
     if ((e.target as HTMLElement).closest('[data-chip-close]')) {
       return;
     }
@@ -147,14 +147,14 @@ export default function SelectBox({
   };
 
   return (
-    <div 
-      css={selectBoxWrapperCss} 
+    <div
+      css={selectBoxWrapperCss}
       className={`${disabled ? 'disabled' : ''} ${className || ''}`}
       ref={wrapperRef}
       onKeyDown={handleKeyDown}
     >
-      <div 
-        css={selectBoxHeaderCss} 
+      <div
+        css={selectBoxHeaderCss}
         className={`${isOpen ? 'open' : ''} ${disabled ? 'disabled' : ''}`}
         onClick={handleHeaderClick}
         role="combobox"

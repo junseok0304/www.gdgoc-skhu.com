@@ -1,4 +1,4 @@
-import { InputHTMLAttributes, forwardRef, useState } from 'react';
+import { forwardRef, InputHTMLAttributes, useState } from 'react';
 
 import { toggleCircleCss, toggleContainerCss } from '../styles/toggle';
 
@@ -73,7 +73,7 @@ const Toggle = forwardRef<HTMLInputElement, ToggleProps>(
           type="checkbox"
           checked={isChecked}
           disabled={disabled}
-          onChange={(e) => {
+          onChange={e => {
             if (!isControlled) {
               setInternalChecked(e.target.checked);
             }
@@ -99,7 +99,14 @@ const Toggle = forwardRef<HTMLInputElement, ToggleProps>(
 
     if (label) {
       return (
-        <label style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', cursor: disabled ? 'not-allowed' : 'pointer' }}>
+        <label
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '8px',
+            cursor: disabled ? 'not-allowed' : 'pointer',
+          }}
+        >
           {toggleElement}
           <span style={{ userSelect: 'none', opacity: disabled ? 0.5 : 1 }}>{label}</span>
         </label>

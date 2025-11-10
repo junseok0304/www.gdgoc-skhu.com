@@ -62,9 +62,7 @@ export default function SelectBoxLink({
   };
 
   const handlePlatformChange = (id: number, platform: string) => {
-    const newLinks = links.map(link =>
-      link.id === id ? { ...link, platform: platform } : link
-    );
+    const newLinks = links.map(link => (link.id === id ? { ...link, platform: platform } : link));
     setLinks(newLinks);
     onChange?.(newLinks);
   };
@@ -77,7 +75,7 @@ export default function SelectBoxLink({
 
   return (
     <div css={wrap}>
-      {links.map((link, index) => (
+      {links.map(link => (
         <div key={link.id} css={fieldWrap}>
           <div css={selectBoxContainer}>
             <SelectBoxBasic
@@ -118,12 +116,7 @@ export default function SelectBoxLink({
       ))}
       {links.length < maxLinks && (
         <div css={addButtonContainer}>
-          <button
-            type="button"
-            css={addButton}
-            onClick={handleAddLink}
-            aria-label="링크 추가"
-          >
+          <button type="button" css={addButton} onClick={handleAddLink} aria-label="링크 추가">
             +
           </button>
         </div>

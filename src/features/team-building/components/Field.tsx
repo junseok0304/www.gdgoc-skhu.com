@@ -1,4 +1,5 @@
-import { InputHTMLAttributes, forwardRef } from 'react';
+import { forwardRef, InputHTMLAttributes } from 'react';
+
 import { errorText, field } from '../styles/field';
 
 interface FieldProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {
@@ -23,16 +24,7 @@ interface FieldProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'>
 }
 
 const Field = forwardRef<HTMLInputElement, FieldProps>(
-  (
-    {
-      placeholder,
-      disabled = false,
-      error = false,
-      errorMessage,
-      ...rest
-    },
-    ref
-  ) => {
+  ({ placeholder, disabled = false, error = false, errorMessage, ...rest }, ref) => {
     return (
       <div>
         <input

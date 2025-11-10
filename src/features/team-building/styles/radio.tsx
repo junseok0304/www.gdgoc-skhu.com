@@ -44,7 +44,7 @@ export const radioButtonCss = css`
 `;
 
 export const radioLabelCss = css`
-  font-size: 1rem; 
+  font-size: 1rem;
   font-weight: 400;
   color: #000;
   user-select: none;
